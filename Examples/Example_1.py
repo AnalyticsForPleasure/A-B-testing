@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 
 
 # **************************************************************************************************************
-# input:
 # In this example:
 # We have a control group (Version A) and a variation group (Version B).
 # Both groups represent the time spent on the landing page, but Version B is expected to have higher engagement due to changes made.
@@ -13,8 +12,6 @@ import matplotlib.pyplot as plt
 #
 # Having the control group allows us to isolate the impact of the changes in Version B and determine whether they lead to a significant improvement compared to the original version (Version A).
 # ***************************************************************************************************************
-
-
 
 # Simulated data for time spent on the landing page
 np.random.seed(42)  # for reproducibility
