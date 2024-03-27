@@ -3,12 +3,10 @@ import pandas as pd
 import seaborn as sns
 from scipy.stats import ttest_ind
 
-
-
 if __name__ == '__main__':
 
     pd.set_option('display.max_rows', 5000)
-    df = pd.read_csv('/home/shay_diy/PycharmProjects/A-B-testing/Data/Breast_Cancer.csv')
+    df = pd.read_csv('/Data/Breast_Cancer.csv')
     print('*')
     column_headers = list(df.columns.values)
     print("The Column Header :", column_headers)
