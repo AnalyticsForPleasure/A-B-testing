@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+import numpy as np
 from scipy.stats import ttest_ind
 
 # userid - a unique number that identifies each player.
@@ -20,6 +21,9 @@ if __name__ == '__main__':
     column_headers = list(df.columns.values)
     print("The Column Header :", column_headers)
 
+    unique_version = df['version'].value_counts()
+
+    print('*')
     # Number of Unique User-
     # In the next row, I am checking  whether the number of unique user IDs ( left side of the equation) is equal to the total number of df  rows  ( right side of the equation ).
     print(df['userid'].nunique() == df.shape[0]) # Number of unique users over the dataset is 90,189 - all unique users
@@ -50,17 +54,36 @@ if __name__ == '__main__':
             print(f"{function.capitalize()}: {aggregates[function]}")
         print('*')
 
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
     # Create subplots
-    fig, axes = plt.subplots(1, 4, figsize=(18, 5))
+    fig, axes = plt.subplots(2, 4, figsize=(18, 5))
+
+    # Histogram for Gate 30
+    df[df['version'] == 'gate_30']['sum_gamerounds'].plot(kind='hist', ax=axes[0], color='lightgray')
+    axes[0].set_title('Distribution of Gate 30 (A)', fontsize=15)
+
+    # Histogram for Gate 40
+    df[df['version'] == 'gate_40']['sum_gamerounds'].plot(kind='hist', ax=axes[1], color='darkgray')
+    axes[1].set_title('Distribution of Gate 40 (B)', fontsize=15)
+
+    # Set common title
+    fig.suptitle('Before Removing The Extreme Value', fontsize=20)
+
+    #Adjust layout
+    plt.tight_layout(pad=4)
+
+
+    # Create subplots
+    fig, axes = plt.subplots(1, 2, figsize=(18, 5))
 
     # Plot histograms for each group and boxplot
-    for i, version in enumerate(['Overall', 'Gate 30 (A)', 'Gate 40 (B)', 'Two Groups']):
-        if version == 'Overall':
-            df['sum_gamerounds'].hist(ax=axes[i], color="steelblue")
-        elif version == 'Gate 30 (A)':
-            df[df['version'] == 'gate_30']['sum_gamerounds'].hist(ax=axes[i], color="steelblue")
+    for i, version in enumerate([ 'Gate 30 (A)', 'Gate 40 (B)']):
+        if version == 'Gate 30 (A)':
+            df[df['version'] == 'gate_30']['sum_gamerounds'].hist(ax=axes[i], color="lightgray")
         elif version == 'Gate 40 (B)':
-            df[df['version'] == 'gate_40']['sum_gamerounds'].hist(ax=axes[i], color="steelblue")
+            df[df['version'] == 'gate_40']['sum_gamerounds'].hist(ax=axes[i], color="darkgray")
         else:
             sns.boxplot(x='version', y='sum_gamerounds', data=df, ax=axes[i])
 
