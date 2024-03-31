@@ -19,7 +19,7 @@ if __name__ == '__main__':
     df = pd.read_csv('/home/shay_diy/PycharmProjects/A-B-testing/Data/cookie_cats.csv')
     print('*')
     column_headers = list(df.columns.values)
-    print("The Column Header :", column_headers)
+    print("The Column Header :", column_headers) # ['userid', 'version', 'sum_gamerounds', 'retention_1', 'retention_7']
 
     unique_version = df['version'].value_counts()
 
@@ -32,11 +32,12 @@ if __name__ == '__main__':
     summary = df.describe([0.01, 0.05, 0.10, 0.20, 0.80, 0.90, 0.95, 0.99])[["sum_gamerounds"]].T
     print('*')
 
+    df.sort_values(by='sum_gamerounds', inplace=True, ascending=False)
+    print('*')
     # A/B Groups & Target Summary Stats - Version 1:
     result = df.groupby("version").sum_gamerounds.agg(["count", "median", "mean", "std", "max"]).T
 
     # A/B Groups & Target Summary Stats - Version 2:
-
     # List of aggregate functions
     aggregate_functions = ["count", "median", "mean", "std", "max"]
 
@@ -53,9 +54,6 @@ if __name__ == '__main__':
         for function in aggregate_functions:
             print(f"{function.capitalize()}: {aggregates[function]}")
         print('*')
-
-    import matplotlib.pyplot as plt
-    import seaborn as sns
 
     # Create subplots
     fig, axes = plt.subplots(2, 4, figsize=(18, 5))
@@ -75,8 +73,15 @@ if __name__ == '__main__':
     plt.tight_layout(pad=4)
 
 
-    # Create subplots
-    fig, axes = plt.subplots(1, 2, figsize=(18, 5))
+    print('*')
+
+    # After Removing The Extreme Value
+    df_after_removing_extreme_value = df[df.sum_gamerounds < df.sum_gamerounds.max()]
+    print('*')
+
+    #
+    # # Create subplots
+    # fig, axes = plt.subplots(1, 2, figsize=(18, 5))
 
     # Plot histograms for each group and boxplot
     for i, version in enumerate([ 'Gate 30 (A)', 'Gate 40 (B)']):
@@ -88,7 +93,7 @@ if __name__ == '__main__':
             sns.boxplot(x='version', y='sum_gamerounds', data=df, ax=axes[i])
 
         # Set titles for each subplot
-        axes[i].set_title(f"Distribution of {version}", fontsize=15)
+        axes[i+2].set_title(f"Distribution of {version}", fontsize=15)
 
     # Set common title and adjust layout
     plt.suptitle("After Removing The Extreme Value", fontsize=20)
