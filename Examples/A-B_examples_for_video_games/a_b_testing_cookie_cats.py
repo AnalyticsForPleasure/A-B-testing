@@ -57,7 +57,7 @@ def first_day_retention(df):
         boot_1d.append(boot_mean)
     fig = plt.figure(figsize=(10, 6), facecolor='#f6f5f5')
     boot_1d = pd.DataFrame(boot_1d)
-    colors = ['white', 'lightgreen']
+    colors = ['white', '#0073CF']
     ax = boot_1d.plot.kde(color=colors, linewidth=4)
     # Set labels and title
     ax.set_xlabel("The Average of 1-Day Retention", {'font': 'serif', 'size': 13, 'color': 'black'})
