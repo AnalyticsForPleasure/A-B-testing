@@ -48,7 +48,7 @@ def number_of_games_rounds_played_by_a_user_first_week(df):
 def first_day_retention(df):
     # the row below show us that a little less than half of the players come back one day after installing the game.
     # Let’s look at how 1-day retention differs between the two AB-groups
-    result_info = df.groupby('version')['retention_1'].mean() # gate 30 - the retention is 0.44818,gate 30 - the retention is 0.44228
+    result_info = df.groupby('version')['retention_1'].mean() # gate 30 - the retention is 0.44818,gate 40 - the retention is 0.44228
 
     boot_1d = []
     iterations = 1000
@@ -73,6 +73,41 @@ def first_day_retention(df):
     # Set background color
     ax.set_facecolor('lightgray')
     plt.savefig('Avg_of_first_day_Retention.jpg', dpi=250, bbox_inches='tight')
+    # Display the plot
+    plt.show()
+
+
+# **************************************************************************************************************
+# Function  name: finding_the_retetion_for_seven_days
+# input:
+# return value: 
+# ***************************************************************************************************************
+def finding_the_retetion_for_seven_days(df):
+    result_info = df.groupby('version')['retention_7'].mean()  # gate 30 - the retention is 0.1902, gate 40 - the retention is 0.1820
+    boot_1d = []
+    iterations = 1000
+    for i in range(iterations):
+        boot_mean = df.sample(frac=1, replace=True).groupby(by='version')['retention_7'].mean()
+        boot_1d.append(boot_mean)
+    fig = plt.figure(figsize=(10, 6), facecolor='#f6f5f5')
+    boot_1d = pd.DataFrame(boot_1d)
+    colors = ['white', '#0073CF']
+    ax = boot_1d.plot.kde(color=colors, linewidth=4)
+    # Set labels and title
+    ax.set_xlabel("The Average of Seven-Days Retention", {'font': 'serif', 'size': 13, 'color': 'black'})
+    ax.set_ylabel("Density", {'font': 'serif', 'size': 13, 'color': 'black'})
+    ax.set_title("The Average of Seven-Days Retention for each AB group",
+                 {'font': 'serif', 'size': 22, 'color': '#0073CF'})
+    # Remove borders
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    # Legend
+    ax.legend(loc='upper left', bbox_to_anchor=(1.01, 1))
+    # Set background color
+    ax.set_facecolor('lightgray')
+    plt.savefig('Avg_of_seven_day_Retention.jpg', dpi=250, bbox_inches='tight')
     # Display the plot
     plt.show()
 
@@ -106,9 +141,12 @@ if __name__ == '__main__':
     # List of aggregate functions
     aggregate_functions = ["count", "median", "mean", "std", "max"]
 
-    #number_of_games_rounds_played_by_a_user_first_week(df)
+    #1) number_of_games_rounds_played_by_a_user_first_week(df)
 
     first_day_retention(df)
+
+    finding_the_retetion_for_seven_days(df)
+
 
     #
     # # Iterate over unique values in the "version" column
