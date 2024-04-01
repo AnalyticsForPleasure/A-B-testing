@@ -40,6 +40,42 @@ def number_of_games_rounds_played_by_a_user_first_week(df):
     # Display the plot
     plt.show()
 
+# **************************************************************************************************************
+# Function  name: first_day_retention
+# input: 
+# return value:
+# ***************************************************************************************************************
+def first_day_retention(df):
+    # the row below show us that a little less than half of the players come back one day after installing the game.
+    # Let’s look at how 1-day retention differs between the two AB-groups
+    result_info = df.groupby('version')['retention_1'].mean() # gate 30 - the retention is 0.44818,gate 30 - the retention is 0.44228
+
+    boot_1d = []
+    iterations = 1000
+    for i in range(iterations):
+        boot_mean = df.sample(frac=1, replace=True).groupby(by='version')['retention_1'].mean()
+        boot_1d.append(boot_mean)
+    fig = plt.figure(figsize=(10, 6), facecolor='#f6f5f5')
+    boot_1d = pd.DataFrame(boot_1d)
+    colors = ['white', 'lightgreen']
+    ax = boot_1d.plot.kde(color=colors, linewidth=4)
+    # Set labels and title
+    ax.set_xlabel("The Average of 1-Day Retention", {'font': 'serif', 'size': 13, 'color': 'black'})
+    ax.set_ylabel("Density", {'font': 'serif', 'size': 13, 'color': 'black'})
+    ax.set_title("The Average of 1-Day Retention for each AB group", {'font': 'serif', 'size': 22, 'color': 'black'})
+    # Remove borders
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    # Legend
+    ax.legend(loc='upper left', bbox_to_anchor=(1.01, 1))
+    # Set background color
+    ax.set_facecolor('lightgray')
+    plt.savefig('Avg_of_first_day_Retention.jpg', dpi=250, bbox_inches='tight')
+    # Display the plot
+    plt.show()
+
 
 if __name__ == '__main__':
 
@@ -70,7 +106,9 @@ if __name__ == '__main__':
     # List of aggregate functions
     aggregate_functions = ["count", "median", "mean", "std", "max"]
 
-    number_of_games_rounds_played_by_a_user_first_week(df)
+    #number_of_games_rounds_played_by_a_user_first_week(df)
+
+    first_day_retention(df)
 
     #
     # # Iterate over unique values in the "version" column
