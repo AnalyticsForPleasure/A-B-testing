@@ -21,14 +21,25 @@ def number_of_games_rounds_played_by_a_user_first_week(df):
     fig = plt.figure(figsize=(10, 6), facecolor='#f6f5f5')
     # Grouping data and plotting
     plot_df = df.groupby(by='sum_gamerounds')['userid'].count()
-    ax = plot_df.head(150).plot(x='sum_gamerounds', y='userid', color='white', linewidth=4)
+    ax = plot_df.head(300).plot(x='sum_gamerounds', y='userid', color='white', linewidth=4)
     # Set logarithmic scale on Y-axis
     ax.set_yscale('log')
     # Set labels and title
     ax.set_xlabel("Total Game Rounds", {'font': 'serif', 'size': 13, 'color': 'black'})
-    ax.set_ylabel("Number of Players\n(Log Scale)", {'font': 'serif', 'size': 13, 'color': 'black'})
+    ax.set_ylabel("Number of Players\n(Logarithmic Scale)", {'font': 'serif', 'size': 13, 'color': 'black'})
     ax.set_title("How many game rounds did players participate\nduring the initial week?",
                  {'font': 'serif', 'size': 20, 'color': 'black'})
+
+    # In the range of 150 to 300 game rounds played, we see a higher standard deviation compared to the range below 150 rounds. This is because there are fewer players in this higher range
+    Annotation_explanation = ("In the range of 150 to 300 game rounds played \n"
+                        "we see a higher standard deviation compared\n" 
+                        "to the range below 150 rounds.\n"
+                        "\n"      
+                        "This is because there are fewer players\n" 
+                        "in this higher range\n")
+
+
+    ax.text(140, 210 , Annotation_explanation, rotation=0, va='center', fontsize=10.5, color='#DAA520', weight='bold',font = 'serif')
     # Remove borders
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
@@ -128,6 +139,8 @@ if __name__ == '__main__':
     # In the next row, I am checking  whether the number of unique user IDs ( left side of the equation) is equal to the total number of df  rows  ( right side of the equation ).
     print(df['userid'].nunique() == df.shape[0])  # Number of unique users over the dataset is 90,189 - all unique users
 
+    unique_version = df['sum_gamerounds'].value_counts().sort_values(ascending=False)
+    print('*')
     # Summary Stats: sum_gamerounds
     summary = df.describe([0.01, 0.05, 0.10, 0.20, 0.80, 0.90, 0.95, 0.99])[["sum_gamerounds"]].T
     print('*')
@@ -141,12 +154,29 @@ if __name__ == '__main__':
     # List of aggregate functions
     aggregate_functions = ["count", "median", "mean", "std", "max"]
 
-    #1) number_of_games_rounds_played_by_a_user_first_week(df)
-
+    number_of_games_rounds_played_by_a_user_first_week(df)
+    print('*')
     first_day_retention(df)
 
     finding_the_retetion_for_seven_days(df)
-
+    #
+    # boot_1d = []
+    # boot_7d = []
+    #
+    # # Adding a column with the % difference between the two A/B groups
+    # boot_1d['diff'] = ((boot_1d['gate_30'] - boot_1d['gate_40']) / boot_1d['gate_40'] * 100)
+    # boot_7d['diff'] = ((boot_7d['gate_30'] - boot_7d['gate_40']) / boot_7d['gate_40'] * 100)
+    #
+    # # Ploting the bootstrap % difference
+    # fig, (ax1) = plt.subplots(1, 1, figsize=(6, 5))
+    #
+    # boot_1d['diff'].plot.kde(ax=ax1, c="#ff99ff", label="1 day retention")
+    # boot_7d['diff'].plot.kde(ax=ax1, c="#00bfff", label="7 days retention")
+    # ax1.set_xlabel("% difference", size=12)
+    # ax1.set_ylabel("% density", size=12)
+    # ax1.set_title("Difference in retention \n between the two A/B groups", fontweight="bold", size=14)
+    # plt.legend()
+    # plt.show()
 
     #
     # # Iterate over unique values in the "version" column
