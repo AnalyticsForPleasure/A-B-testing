@@ -58,20 +58,21 @@ if __name__ == '__main__':
     # Removing the outlier with 49854 rounds played
     df = df[df['sum_gamerounds'] != 49854]
 
-    # splitting the data
+    # Splitting the data ( After removing the outlier )
     control_group_7 = df[df['version'] == 'gate_30']['retention_7']
     test_group_7 = df[df['version'] == 'gate_40']['retention_7']
+
     control_group_1 = df[df['version'] == 'gate_30']['retention_1']
     test_group_1 = df[df['version'] == 'gate_40']['retention_1']
+
     control_group_rounds = df[df['version'] == 'gate_30']['sum_gamerounds']
     test_group_rounds = df[df['version'] == 'gate_40']['sum_gamerounds']
 
 
     # Creating a list with bootstrapped means for 1 day retention each A/B-group
 
-    # Bootstrapping for control group
+    # Bootstrapping for control group & test group
     Bootstrap_control_group_1 = bootstrapping(control_group_1, iterations=5000)
-    # Bootstrapping for test group
     Bootstrap_test_group_1 = bootstrapping(test_group_1, iterations=5000)
 
     Bootstrap_1 = pd.DataFrame(data={'gate_30': Bootstrap_control_group_1,
@@ -85,7 +86,6 @@ if __name__ == '__main__':
     sns.displot(Bootstrap_1['diff'], kind="kde").set(title="Difference in retention between bootstrapped samples",
                                                 xlabel="Difference in 1 day retention")
     plt.axvline(Bootstrap_1['diff'].mean(), c='r', ls='--', lw=2.0)
-
     plt.savefig('difference_between_the_two_AB_groups.jpg', dpi=250, bbox_inches='tight')
 
     # Display the plot
@@ -94,8 +94,8 @@ if __name__ == '__main__':
     prob = (Bootstrap_1['diff'] < 0).sum() / len(Bootstrap_1)
 
     # Showing the probability
-    print(
-        'The probabilty of control group (gate at level 30) having a higher 1 day retention than test group (gate at level 40) is: ~ {}% \n The difference in the average 1 day retention between control and test group is {}%'.format(
+    print('The probabilty of control group (gate at level 30) having a higher 1 day retention than test group (gate at level 40) is: ~ {}% \n '
+          'The difference in the average 1 day retention between control and test group is {}%'.format(
             round(prob * 100, 1), round(Bootstrap_1['diff'].mean(), 3)))
 
     # Testing if changing the gate affects the number of rounds played by users
